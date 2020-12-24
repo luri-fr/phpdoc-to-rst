@@ -36,6 +36,7 @@ use phpDocumentor\Reflection\Php\Namespace_;
 use phpDocumentor\Reflection\Php\NodesFactory;
 use phpDocumentor\Reflection\Php\Project;
 use phpDocumentor\Reflection\Php\ProjectFactory;
+use phpDocumentor\Reflection\Fqsen;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -73,7 +74,10 @@ final class ApiDocBuilder
     private $srcDir = [];
 
     /** @var string */
-    private $dstDir;
+    private $dst = null;
+
+	/**  @var bool */
+	private $singleFileOut = false;
 
     /** @var bool */
     private $verboseOutput = false;
@@ -85,11 +89,13 @@ final class ApiDocBuilder
      * ApiDocBuilder constructor.
      *
      * @param string[] $srcDir array of paths that should be analysed
-     * @param string   $dstDir path where the output documentation should be stored
+     * @param string $dst path where the output documentation should be stored.
+	 * @param bool $singleFileOut If set to yes, all data is writed into the file pointed by $dst
      */
-    public function __construct($srcDir, $dstDir)
+    public function __construct($srcDir, $dst, bool $singleFileOut = false)
     {
-        $this->dstDir = $dstDir;
+        $this->dst = $dst;
+		$this->singleFileOut = $singleFileOut;
         $this->srcDir = (array) $srcDir;
     }
 
@@ -98,6 +104,7 @@ final class ApiDocBuilder
      */
     public function build()
     {
+		$this->blankingFileOut();
         $this->setupReflection();
         $this->createDirectoryStructure();
         $this->parseFiles();
@@ -173,14 +180,19 @@ final class ApiDocBuilder
     }
 
     /**
-     * Create directory structure for the rst output.
+     * Create directory structure for the rst output in normal mode
      *
      * @throws WriteException
      */
     private function createDirectoryStructure()
     {
+		//Do not make that in SingleFileOut mode
+		if ($this->singleFileOut) {
+			return;
+		}
+
         foreach ($this->project->getNamespaces() as $namespace) {
-            $namespaceDir = $this->dstDir.str_replace('\\', '/', $namespace->getFqsen());
+            $namespaceDir = $this->dst.str_replace('\\', '/', $namespace->getFqsen());
             if (is_dir($namespaceDir)) {
                 continue;
             }
@@ -246,15 +258,13 @@ final class ApiDocBuilder
             }
             $builder = new NamespaceIndexBuilder($this->extensions, $namespaces, $namespace, $functions, $constants);
             $builder->render();
-            $path = $this->dstDir.str_replace('\\', '/', $fqsen).'/index.rst';
-            file_put_contents($path, $builder->getContent());
+			$path = $this->writeFile($fqsen.'/index', $builder->getContent());
         }
 
         $this->log('Build main index files.');
         $builder = new MainIndexBuilder($namespaces);
         $builder->render();
-        $path = $this->dstDir.'/index-namespaces-all.rst';
-        file_put_contents($path, $builder->getContent());
+		$path = $this->writeFile('/index-namespaces-all', $builder->getContent());
     }
 
     /**
@@ -296,8 +306,8 @@ final class ApiDocBuilder
         foreach ($file->getInterfaces() as $interface) {
             $fqsen = $interface->getFqsen();
             $builder = new InterfaceFileBuilder($file, $interface, $this->extensions);
-            $filename = $this->dstDir.str_replace('\\', '/', $fqsen).'.rst';
-            file_put_contents($filename, $builder->getContent());
+			$filename = $this->writeFile($fqsen, $builder->getContent());
+
             $this->docFiles[(string) $interface->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
@@ -316,8 +326,8 @@ final class ApiDocBuilder
         foreach ($file->getClasses() as $class) {
             $fqsen = $class->getFqsen();
             $builder = new ClassFileBuilder($file, $class, $this->extensions);
-            $filename = $this->dstDir.str_replace('\\', '/', $fqsen).'.rst';
-            file_put_contents($filename, $builder->getContent());
+			$filename = $this->writeFile($fqsen, $builder->getContent());
+
             $this->docFiles[(string) $class->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
@@ -336,8 +346,8 @@ final class ApiDocBuilder
         foreach ($file->getTraits() as $trait) {
             $fqsen = $trait->getFqsen();
             $builder = new TraitFileBuilder($file, $trait, $this->extensions);
-            $filename = $this->dstDir.str_replace('\\', '/', $fqsen).'.rst';
-            file_put_contents($filename, $builder->getContent());
+			$filename = $this->writeFile($fqsen, $builder->getContent());
+
             $this->docFiles[(string) $trait->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
@@ -379,4 +389,49 @@ final class ApiDocBuilder
             $this->constants[$namespace][] = $constant;
         }
     }
+
+	/**
+	 * If dst is a file, it's blanking the file.
+	 * If dst is a directory, it doing nothing
+	 *
+	 * @author Luri-fr
+	 */
+	private function blankingFileOut() {
+		if ($this->singleFileOut) {
+			if (is_dir($this->dst)) {
+				throw new \RuntimeException($this->dst . ' is a directory. In SingleFileOut, It\'s must be a file.');
+			}
+
+			file_put_contents($this->dst, '');
+			$this->debug('Delete Data of '.$this->dst);
+		}
+	}
+
+	/**
+	 * Write data into file
+	 *
+	 * In SingleFileOut is not set, this function write contents into the good file
+	 *
+	 * In SingleFileOut mode, All content is writed into a single file
+	 *
+	 * @author Luri-fr
+	 * @param phpDocumentor\Reflection\Fqsen|string $fqsen Fqsen represent the destination file in case of we have not in SingleFileOut mode.
+	 * @param string $contents
+	 * @return string file name into data where stored
+	 */
+	private function writeFile( $fqsen, string $contents) {
+		if (!$this->singleFileOut) {
+			//normal mode
+			$filename = $this->dst.str_replace('\\', '/', $fqsen).'.rst';
+            file_put_contents($filename, $contents);
+
+			return $filename;
+
+		} else {
+			//SingleFileOut mode
+			file_put_contents($this->dst, $contents, FILE_APPEND);
+
+			return $this->dst;
+		}
+	}
 }
