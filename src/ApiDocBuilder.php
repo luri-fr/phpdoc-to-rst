@@ -53,7 +53,7 @@ final class ApiDocBuilder
     private $project;
 
     /** @var array */
-    private $docFiles = [];
+    //private $docFiles = [];
 
     /** @var array */
     private $constants = [];
@@ -308,7 +308,7 @@ final class ApiDocBuilder
             $builder = new InterfaceFileBuilder($file, $interface, $this->extensions);
 			$filename = $this->writeFile($fqsen, $builder->getContent());
 
-            $this->docFiles[(string) $interface->getFqsen()] = str_replace('\\', '/', $fqsen);
+            //$this->docFiles[(string) $interface->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
             if (strpos((string) substr($fqsen, 1), '\\') === false) {
@@ -328,7 +328,7 @@ final class ApiDocBuilder
             $builder = new ClassFileBuilder($file, $class, $this->extensions);
 			$filename = $this->writeFile($fqsen, $builder->getContent());
 
-            $this->docFiles[(string) $class->getFqsen()] = str_replace('\\', '/', $fqsen);
+           // $this->docFiles[(string) $class->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
             if (strpos((string) substr($class->getFqsen(), 1), '\\') === false) {
@@ -348,7 +348,7 @@ final class ApiDocBuilder
             $builder = new TraitFileBuilder($file, $trait, $this->extensions);
 			$filename = $this->writeFile($fqsen, $builder->getContent());
 
-            $this->docFiles[(string) $trait->getFqsen()] = str_replace('\\', '/', $fqsen);
+            //$this->docFiles[(string) $trait->getFqsen()] = str_replace('\\', '/', $fqsen);
 
             // also build root namespace in indexes
             if (strpos((string) substr($fqsen, 1), '\\') === false) {
