@@ -65,6 +65,7 @@
 
             "# END BUILD - ALL OK"
         ],
-		"test": "vendor\\bin\\phpunit"
+        "test-win": "vendor\\bin\\phpunit",
+        "test": "vendor/bin/phpunit"
     }
 }
