@@ -5,8 +5,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/abbadon1334/phpdoc-to-rst/badge.svg?branch=develop)](https://coveralls.io/github/abbadon1334/phpdoc-to-rst?branch=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/fe2ceefd5ceb42ba8993f6cd4917b230)](https://www.codacy.com/gh/abbadon1334/phpdoc-to-rst/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abbadon1334/phpdoc-to-rst&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/fe2ceefd5ceb42ba8993f6cd4917b230)](https://www.codacy.com/gh/abbadon1334/phpdoc-to-rst/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abbadon1334/phpdoc-to-rst&amp;utm_campaign=Badge_Coverage)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/abbadon1334/phpdoc-to-rst/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/abbadon1334/phpdoc-to-rst/?branch=develop)
-[![Build Status](https://scrutinizer-ci.com/g/abbadon1334/phpdoc-to-rst/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/abbadon1334/phpdoc-to-rst/build-status/develop)
 
 Forked and refactor by Francesco "Abbadon1334" Danti.
 
