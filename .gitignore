@@ -9,3 +9,4 @@ composer.phar
 /tests/documentor-doc/
 /tests/psr-doc/
 /tests/self-doc/
+/.phpunit.result.cache
