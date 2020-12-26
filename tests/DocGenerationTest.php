@@ -28,6 +28,8 @@ class DocGenerationTest extends \PHPUnit\Framework\TestCase
             'http://github.com/abbadon1334/phpdoc-to-rst/',
         ]);
         $apiDocBuilder->build();
+
+        $this->addToAssertionCount(1);
     }
 
     public function testDocumentingSelf()
@@ -40,6 +42,8 @@ class DocGenerationTest extends \PHPUnit\Framework\TestCase
         $apiDocBuilder->setDebugOutput(true);
         $apiDocBuilder->addExtension(InterfaceImplementors::class);
         $apiDocBuilder->build();
+
+        $this->addToAssertionCount(1);
     }
 
     public function testDocumentingPSR()
@@ -52,6 +56,8 @@ class DocGenerationTest extends \PHPUnit\Framework\TestCase
         $apiDocBuilder->setDebugOutput(true);
         $apiDocBuilder->addExtension(InterfaceImplementors::class);
         $apiDocBuilder->build();
+
+        $this->addToAssertionCount(1);
     }
 
     public function testDocumentingDocumentor()
@@ -64,6 +70,8 @@ class DocGenerationTest extends \PHPUnit\Framework\TestCase
         $apiDocBuilder->setDebugOutput(true);
         $apiDocBuilder->addExtension(InterfaceImplementors::class);
         $apiDocBuilder->build();
+
+        $this->addToAssertionCount(1);
     }
 
     public function testDocumentingWithExtension()
@@ -84,5 +92,7 @@ class DocGenerationTest extends \PHPUnit\Framework\TestCase
             'master',
         ]);
         $apiDocBuilder->build();
+
+        $this->addToAssertionCount(1);
     }
 }

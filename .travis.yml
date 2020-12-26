@@ -17,7 +17,7 @@ before_script:
 script:
   - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_script:
-  - php vendor/bin/codacycoverage clover build/logs/clover.xml
+after_success:
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report
   - sh -c 'if( [ "$TRAVIS_PHP_VERSION" != "hhvm" ] ); then php vendor/bin/coveralls -v; fi;'
   - ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
