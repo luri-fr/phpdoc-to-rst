@@ -1,0 +1,1 @@
+Bonjour <?=$this->e($namespace)?>

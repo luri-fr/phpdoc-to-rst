@@ -5,7 +5,9 @@
     "require": {
         "phpdocumentor/reflection": "~4.0",
 		"nikic/php-parser": "^4.0",
-        "symfony/console": "^4.0"
+        "symfony/console": "^4.0",
+		"league/plates": ">=3.X-dev",
+		"php": ">7.4"
     },
     "require-dev": {
         "codacy/coverage": "dev-master",
@@ -24,7 +26,10 @@
         {
             "name": "Ferenc Kurucz",
             "email": "ferenc.kurucz.6351@gmail.com"
-        }
+        }, {
+			"name": "Luri",
+            "email": "vic@luri.dev"
+		}
     ],
     "autoload": {
         "psr-4": {
