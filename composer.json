@@ -66,6 +66,7 @@
             "# END BUILD - ALL OK"
         ],
         "test-win": "vendor\\bin\\phpunit",
+		"test-win-v2": "vendor\\bin\\phpunit --testsuite PHPDocToRst-V2",
         "test": "vendor/bin/phpunit"
     }
 }
